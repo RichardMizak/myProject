@@ -21,9 +21,9 @@ public class Controller {
             String name = (String.valueOf(o.get("name")));
             String genre = (String.valueOf(o.get("genre")));
             if (name==null || genre==null || name.trim().length()==0 || genre.trim().length()==0) {
-                log.error("Missing Firstname or Lastname or incorrect age.");
+                log.error("Missing game or genre.");
                 JSONObject object = new JSONObject();
-                object.put("ERROR", "Missing Firstname or Lastname");
+                object.put("ERROR", "Missing game or genre");
                 return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON).body(o.toJSONString());
             }
             Game game=new Game(name,genre);
