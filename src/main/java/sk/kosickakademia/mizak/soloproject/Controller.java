@@ -32,7 +32,7 @@ public class Controller {
             log.error("ERROR");
             e.printStackTrace();
         }
-        return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(null);
+        return ResponseEntity.status(201).contentType(MediaType.APPLICATION_JSON).body(null);
     }
     @GetMapping("/games")
     public ResponseEntity<String> games(){

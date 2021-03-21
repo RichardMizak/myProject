@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Properties;
 
 public class Database {
-    private String url="http://localhost:3306/games";
-    private String username = "admin";
-    private String password = "";
     private final String insertNewGame="INSERT INTO gamedata (GameName, GameGenre) VALUES ( ?, ?)";
     private final String allGames="SELECT * FROM gamedata";
     private final String changeGame="UPDATE gamedata SET GameName = ? WHERE id = ?";
@@ -23,17 +20,21 @@ public class Database {
         Properties props=new Properties();
         InputStream loader=getClass().getClassLoader().getResourceAsStream("database.properties");
         props.load(loader);
+        Class.forName("com.mysql.cj.jdbc.Driver");
         String url=props.getProperty("url");
         String username=props.getProperty("username");
         String password=props.getProperty("password");
+
         Connection conn= DriverManager.getConnection(url,username,password);
         log.print("Connection success.");
         return conn;
     }catch(SQLException | IOException throwables){
         log.error(throwables.toString());
 
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
     }
-    return null;
+        return null;
 }
     public boolean insertNewGame(Game game){
         Connection conn=getConn();

@@ -8,19 +8,9 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 @SpringBootApplication
-public class App extends SpringBootServletInitializer
-{
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application)
+public class App{
+    public static void main(String[] args)
     {
-        return application.sources(AppConfiguration.class);
-    }
-
-    public static void main(String[] args) throws Exception
-    {
-        SpringApplication application = new SpringApplication(App.class);
-        application.setApplicationContextClass(AnnotationConfigWebApplicationContext.class);
         SpringApplication.run(App.class, args);
     }
 }
