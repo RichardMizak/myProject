@@ -9,12 +9,14 @@ import java.util.List;
 import java.util.Properties;
 
 public class Database {
-    private String url="localhost:3306/games";
+    private String url="http://localhost:3306/games";
     private String username = "admin";
     private String password = "";
-    private final  String insertNewGame="INSERT INTO gamedata (GameName, GameGenre, ) VALUES ( ?, ?)";
-    private final  String allGames="SELECT * FROM gamedata";
-    private final String changeGame="UPDATE gamedata SET game = ? WHERE id = ?";
+    private final String insertNewGame="INSERT INTO gamedata (GameName, GameGenre) VALUES ( ?, ?)";
+    private final String allGames="SELECT * FROM gamedata";
+    private final String changeGame="UPDATE gamedata SET GameName = ? WHERE id = ?";
+    private final String gameByID="SELECT * FROM gamedata WHERE id = ?";
+    private final String deleteGame="DELETE FROM gamedata WHERE id = ?";
     Log log=new Log();
     public Connection getConn(){
     try{
@@ -33,7 +35,7 @@ public class Database {
     }
     return null;
 }
-    public boolean insertNewUser(Game game){
+    public boolean insertNewGame(Game game){
         Connection conn=getConn();
         if(conn!=null){
             try{
@@ -83,23 +85,51 @@ public class Database {
         try (Connection conn = getConn()) {
             if (conn != null) {
                 PreparedStatement ps = conn.prepareStatement(allGames);
-                return executeSelect(ps);
+                return  executeSelect(ps);
             }
         }catch(Exception ex) {
         }
         return null;
     }
-    public boolean changeGame(int id,int newGame){
+    public boolean changeGame(int id,String newGame){
         if (id < 0)
             return false;
         try (Connection conn=getConn()){
             if (conn != null) {
                 PreparedStatement ps = conn.prepareStatement(changeGame);
-                ps.setInt(1, newGame);
+                ps.setString(1, newGame);
                 ps.setInt(2, id);
                 int update=ps.executeUpdate();
                 log.print("Updated game for id: " + id);
                 return update==1;
+            }
+        } catch (Exception e) {
+            log.error(e.toString());
+        }
+        return false;
+    }
+    public Game getGameById(int id){
+        try (Connection conn = getConn()) {
+            if (conn != null) {
+                PreparedStatement ps = conn.prepareStatement(gameByID);
+                ps.setInt(1, id);
+                return (Game) executeSelect(ps);
+            }
+        }catch(Exception ex) {
+        }
+        return null;
+    }
+    public boolean deleteGame(int id){
+        if (getGameById(id) == null){
+            log.error("No game found");
+            return false;
+        }
+        try (Connection conn = getConn()) {
+            PreparedStatement ps = conn.prepareStatement(deleteGame);
+            ps.setInt(1, id);
+            if (ps.executeUpdate() == 1){
+                log.print("Deleted game: " + id);
+                return true;
             }
         } catch (Exception e) {
             log.error(e.toString());
