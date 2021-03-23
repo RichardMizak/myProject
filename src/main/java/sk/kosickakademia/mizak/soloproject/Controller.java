@@ -24,7 +24,7 @@ public class Controller {
                 log.error("Missing game or genre.");
                 JSONObject object = new JSONObject();
                 object.put("ERROR", "Missing game or genre");
-                return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON).body(o.toJSONString());
+                return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON).body(object.toJSONString());
             }
             Game game=new Game(name,genre);
             new Database().insertNewGame(game);
@@ -45,24 +45,23 @@ public class Controller {
         JSONObject o=new JSONObject();
         try {
             o= (JSONObject) new JSONParser().parse(body);
-            return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body("");
+            return ResponseEntity.status(400).body("ERROR");
         }catch(ParseException e) {
             e.printStackTrace();
         }
         String data=String.valueOf(o.get("newGame"));
-        System.out.println("data:"+data);
         if(data.equalsIgnoreCase("null")){
-            return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body("");
+            return ResponseEntity.status(400).body("ERROR");
         }
-        String newGame = String.valueOf(data);
+        String newGame=String.valueOf(data);
         if(newGame==null){
-            return ResponseEntity.status(400).contentType(MediaType.APPLICATION_JSON).body("");
+            return ResponseEntity.status(400).body("ERROR");
         }
         boolean result = new Database().changeGame(id,newGame);
         if(result){
-            return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body("");
+            return ResponseEntity.status(200).body("Success");
         }else{
-            return ResponseEntity.status(404).contentType(MediaType.APPLICATION_JSON).body("");
+            return ResponseEntity.status(404).body("ERROR");
         }
     }
     @RequestMapping(value="/game/{id}",method=RequestMethod.DELETE)

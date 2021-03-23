@@ -7,6 +7,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Database {
     private final String insertNewGame="INSERT INTO gamedata (GameName, GameGenre) VALUES ( ?, ?)";
@@ -24,13 +27,11 @@ public class Database {
         String url=props.getProperty("url");
         String username=props.getProperty("username");
         String password=props.getProperty("password");
-
         Connection conn= DriverManager.getConnection(url,username,password);
         log.print("Connection success.");
         return conn;
     }catch(SQLException | IOException throwables){
         log.error(throwables.toString());
-
     } catch (ClassNotFoundException e) {
         e.printStackTrace();
     }
