@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class Controller {
             }
             Game game=new Game(name,genre);
             new Database().insertNewGame(game);
-        } catch (ParseException e) {
+        } catch (ParseException | SQLException | ClassNotFoundException e) {
             log.error("ERROR");
             e.printStackTrace();
         }
@@ -37,7 +38,7 @@ public class Controller {
     @GetMapping("/games")
     public ResponseEntity<String> games(){
         List<Game> list=new Database().getAllGames();
-        String json=new Game().getJSON(list);
+        String json=new Util().getJSON(list);
         return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(json);
     }
     @PutMapping("/games/{id}")
@@ -45,23 +46,23 @@ public class Controller {
         JSONObject o=new JSONObject();
         try {
             o= (JSONObject) new JSONParser().parse(body);
-            return ResponseEntity.status(400).body("ERROR");
+            return ResponseEntity.status(400).body("ERROR1");
         }catch(ParseException e) {
             e.printStackTrace();
         }
         String data=String.valueOf(o.get("newGame"));
         if(data.equalsIgnoreCase("null")){
-            return ResponseEntity.status(400).body("ERROR");
+            return ResponseEntity.status(400).body("ERROR2");
         }
         String newGame=String.valueOf(data);
         if(newGame==null){
-            return ResponseEntity.status(400).body("ERROR");
+            return ResponseEntity.status(400).body("ERROR3");
         }
         boolean result = new Database().changeGame(id,newGame);
         if(result){
             return ResponseEntity.status(200).body("Success");
         }else{
-            return ResponseEntity.status(404).body("ERROR");
+            return ResponseEntity.status(404).body("ERROR4");
         }
     }
     @RequestMapping(value="/game/{id}",method=RequestMethod.DELETE)
